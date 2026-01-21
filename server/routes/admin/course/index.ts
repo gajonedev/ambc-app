@@ -8,7 +8,7 @@ import {
 } from "./schema";
 import { db } from "@/db";
 import { course } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export const adminCourseRouter = createTRPCRouter({
   create: adminProcedure
@@ -32,6 +32,21 @@ export const adminCourseRouter = createTRPCRouter({
         throw error;
       }
     }),
+
+  // TODO: Add pagination and filtering
+  list: adminProcedure.query(async () => {
+    try {
+      const courses = await db
+        .select()
+        .from(course)
+        .orderBy(desc(course.createdAt))
+        .limit(100);
+      return courses;
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      throw error;
+    }
+  }),
 
   update: adminProcedure
     .input(updateCourseSchema)
