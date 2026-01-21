@@ -19,7 +19,7 @@ import {
   verifyOtpSchema,
   type VerifyOtpFormData,
 } from "@/components/auth/schema";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useState } from "react";
 
 interface VerifyOtpFormProps {
@@ -117,7 +117,7 @@ export function VerifyOtpForm({ email, onResend }: VerifyOtpFormProps) {
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                <Loader className="mr-2 w-4 h-4 animate-spin" />
                 Vérification...
               </>
             ) : (

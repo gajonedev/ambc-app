@@ -16,7 +16,7 @@ import {
   forgotPasswordSchema,
   type ForgotPasswordFormData,
 } from "@/components/auth/schema";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -107,7 +107,7 @@ export function ForgotPasswordForm() {
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
             <>
-              <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+              <Loader className="mr-2 w-4 h-4 animate-spin" />
               Envoi en cours...
             </>
           ) : (

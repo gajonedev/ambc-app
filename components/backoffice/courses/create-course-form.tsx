@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 
 import { useTRPC } from "@/trpc/client";
 import { createCourseFormSchema, type CreateCourseFormInput } from "./schemas";
@@ -56,20 +56,23 @@ export function CreateCourseForm({ user }: { user?: User }) {
     },
   });
 
-  const { mutateAsync, isPending } = useMutation(
+  const { mutate, isPending } = useMutation(
     trpc.admin.course.create.mutationOptions({
-      onSuccess: () => {
-        toast.success("Formation créée avec succès !");
+      onSuccess: ({ title }) => {
+        toast.success("Formation " + title + " créée avec succès !");
         router.push(`/backoffice/courses`);
       },
       onError: (error) => {
-        toast.error(error.message || "Erreur lors de la création");
+        toast.error(
+          "Erreur lors de la création du cours: " + error.message ||
+            "Erreur lors de la création",
+        );
       },
     }),
   );
 
   const onSubmit = (data: CreateCourseFormInput) => {
-    toast.info("Data: " + JSON.stringify(data, null, 2));
+    mutate(data);
   };
 
   // Auto-generate slug from title
@@ -391,7 +394,7 @@ export function CreateCourseForm({ user }: { user?: User }) {
             <Link href="/backoffice/courses">Annuler</Link>
           </Button>
           <Button type="submit" disabled={isPending}>
-            {isPending && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
+            {isPending && <Loader className="mr-2 w-4 h-4 animate-spin" />}
             Créer la formation
           </Button>
         </div>

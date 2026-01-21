@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { ImageIcon, Loader2, Upload, X } from "lucide-react";
+import { ImageIcon, Loader, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { useUploadThing } from "@/utils/uploadthing";
@@ -11,6 +11,7 @@ import type { OurFileRouter } from "@/app/api/uploadthing/core";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { normalizeFileSize } from "@/utils";
 
 interface ImageDropzoneProps {
   value?: string;
@@ -30,6 +31,7 @@ export function ImageDropzone({
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
+  const [imageUploaded, setImageUploaded] = useState(false);
 
   const { startUpload, isUploading } = useUploadThing(endpoint, {
     onClientUploadComplete: (res) => {
@@ -41,12 +43,17 @@ export function ImageDropzone({
       if (preview) {
         URL.revokeObjectURL(preview);
       }
+
+      setImageUploaded(true);
       setPreview(null);
       setFile(null);
       setProgress(0);
     },
     onUploadError: (error) => {
-      toast.error(error.message || "Erreur lors de l'import");
+      toast.error(
+        "Erreur d'importation du fichier: " + error.message ||
+          "Erreur lors de l'import",
+      );
       setProgress(0);
     },
     onUploadProgress: (p) => {
@@ -102,16 +109,18 @@ export function ImageDropzone({
               unoptimized={preview !== null}
             />
           </div>
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon"
-            className="-top-2 -right-2 absolute w-6 h-6"
-            onClick={handleRemove}
-            disabled={disabled || isUploading}
-          >
-            <X className="w-3 h-3" />
-          </Button>
+          {!imageUploaded && (
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon"
+              className="-top-2 -right-2 absolute w-6 h-6"
+              onClick={handleRemove}
+              disabled={disabled || isUploading}
+            >
+              <X className="w-3 h-3" />
+            </Button>
+          )}
         </div>
       ) : (
         <div
@@ -157,13 +166,13 @@ export function ImageDropzone({
           >
             {isUploading ? (
               <>
-                <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                <Loader className="w-4 h-4 animate-spin" />
                 Import en cours... {progress}%
               </>
             ) : (
               <>
-                <Upload className="mr-2 w-4 h-4" />
-                Importer
+                <Upload className="w-4 h-4" />
+                Importer {`(${normalizeFileSize(file.size)})`}
               </>
             )}
           </Button>

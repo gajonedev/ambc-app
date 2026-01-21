@@ -49,7 +49,7 @@ export default function BackofficeCoursesPage() {
       </div>
 
       {/* Stats */}
-      <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-4">
+      <div className="gap-4 grid @md/container:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row justify-between items-center pb-2">
             <CardTitle className="font-medium text-sm">
