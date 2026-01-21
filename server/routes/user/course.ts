@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { course } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 
-export const courseRouter = createTRPCRouter({
+export const userCourseRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
     try {
       const courses = await db.select().from(course);

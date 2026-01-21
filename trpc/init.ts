@@ -68,3 +68,25 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
     },
   });
 });
+
+export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+  const { user } = ctx.auth;
+
+  if (user.role !== "admin") {
+    console.error(
+      "Forbidden access attempt by user:",
+      user.name,
+      "(",
+      user.email,
+      ") with ID:",
+      user.id,
+    );
+
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Admin access required",
+    });
+  }
+
+  return next();
+});

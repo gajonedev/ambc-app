@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
-import "./globals.css";
+import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
 import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
+import { ProgressBarProvider } from "@/components/progress-bar-provider";
 
 const inter = Be_Vietnam_Pro({
   subsets: ["latin"],
@@ -33,7 +34,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <ProgressBarProvider>
+            <TRPCReactProvider>{children}</TRPCReactProvider>
+          </ProgressBarProvider>
           <div className="right-4 bottom-4 z-1000 fixed">
             <ModeToggle />
           </div>
