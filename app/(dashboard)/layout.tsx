@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       }
     >
       <DashboardSidebar variant="inset" />
-      <SidebarInset className="flex flex-col h-screen">
+      <SidebarInset className="flex flex-col min-h-screen">
         <DashboardHeader />
         <main className="flex-1 overflow-auto">
           <div className="px-4 lg:px-6 py-6 container">{children}</div>

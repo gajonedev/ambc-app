@@ -81,7 +81,7 @@ export function DashboardHeader() {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <header className="flex items-center gap-2 bg-background px-4 lg:px-6 border-b h-14 lg:h-15 shrink-0">
+    <header className="top-0 left-0 z-10 sticky flex items-center gap-2 bg-background px-4 lg:px-6 border-b h-14 lg:h-15 shrink-0">
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mx-2 h-4" />
       <Breadcrumb>

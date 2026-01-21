@@ -3,7 +3,8 @@ import { z } from "zod";
 // ==================== COURSE SCHEMAS ====================
 
 /**
- * Schema pour créer un cours
+ * Schema backend pour créer un cours (validation tRPC)
+ * Respecte les contraintes de la base de données
  */
 export const createCourseSchema = z.object({
   title: z.string().min(1, "Le titre est requis"),
@@ -16,8 +17,8 @@ export const createCourseSchema = z.object({
     ),
   description: z.string().optional(),
   shortDescription: z.string().max(200, "Max 200 caractères").optional(),
-  image: z.url("URL d'image invalide").optional(),
-  price: z.coerce.string().optional().default("0"),
+  image: z.string().optional(),
+  price: z.string().default("0"),
   currency: z.string().default("XOF"),
   isPublished: z.boolean().default(false),
   isFeatured: z.boolean().default(false),

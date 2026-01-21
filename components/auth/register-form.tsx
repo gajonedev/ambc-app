@@ -12,7 +12,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { registerSchema, type RegisterFormData } from "@/lib/validations/auth";
+import {
+  registerSchema,
+  type RegisterFormData,
+} from "@/components/auth/schema";
 import { Loader, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";

@@ -17,10 +17,10 @@ export default function BackofficeLayout({
       }
     >
       <BackofficeSidebar variant="inset" />
-      <SidebarInset className="flex flex-col h-screen">
+      <SidebarInset className="@container/sidebar flex flex-col min-h-screen">
         <BackofficeHeader />
         <main className="flex-1 overflow-auto">
-          <div className="px-4 lg:px-6 py-6 container">{children}</div>
+          <div className="px-4 lg:px-6 py-6">{children}</div>
         </main>
       </SidebarInset>
     </SidebarProvider>

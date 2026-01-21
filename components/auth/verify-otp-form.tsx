@@ -18,7 +18,7 @@ import {
 import {
   verifyOtpSchema,
   type VerifyOtpFormData,
-} from "@/lib/validations/auth";
+} from "@/components/auth/schema";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 

@@ -15,7 +15,7 @@ import {
 import {
   forgotPasswordSchema,
   type ForgotPasswordFormData,
-} from "@/lib/validations/auth";
+} from "@/components/auth/schema";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";

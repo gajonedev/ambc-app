@@ -13,7 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { loginSchema, type LoginFormData } from "@/lib/validations/auth";
+import { loginSchema, type LoginFormData } from "@/components/auth/schema";
 import { Loader } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
