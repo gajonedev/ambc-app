@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { adminOnlyPage } from "@/server/utils";
 import { notFound } from "next/navigation";
+import { caller } from "@/trpc/server";
 
 interface CourseDetailPageProps {
   params: Promise<{
@@ -39,60 +40,15 @@ export default async function CourseDetailPage({
   await adminOnlyPage();
   const { courseId } = await params;
 
-  // TODO: Fetch real course data
-  // const course = await caller.admin.course.getById({ id: courseId });
-
-  // Mock data for now
-  const course = {
+  const course = await caller.admin.course.getByIdOrSlug({
     id: courseId,
-    title: "Conception de Plans Architecturaux",
-    slug: "conception-plans-architecturaux",
-    description:
-      "Apprenez à concevoir des plans architecturaux professionnels. Cette formation complète vous guidera à travers toutes les étapes de la conception, du croquis initial aux plans détaillés.",
-    price: 50000,
-    currency: "XOF",
-    isPublished: true,
-    imageUrl: "/placeholder-course.jpg",
-    instructorName: "John Formateur",
-    instructorImage: null,
-    modulesCount: 5,
-    lessonsCount: 20,
-    enrolledCount: 45,
-    duration: "12h 30min",
-    createdAt: "2026-01-10",
-  };
+  });
 
-  // Mock modules
-  const modules = [
-    {
-      id: "module-1",
-      title: "Introduction aux plans architecturaux",
-      description: "Ce module présente les bases des plans architecturaux.",
-      order: 1,
-      lessonsCount: 5,
-      isPublished: true,
-    },
-    {
-      id: "module-2",
-      title: "Les fondamentaux du dessin technique",
-      description: "Apprenez les bases du dessin technique architectural.",
-      order: 2,
-      lessonsCount: 5,
-      isPublished: true,
-    },
-    {
-      id: "module-3",
-      title: "Maîtriser les échelles",
-      description: "Comprendre et utiliser les échelles dans vos plans.",
-      order: 3,
-      lessonsCount: 4,
-      isPublished: false,
-    },
-  ];
+  if (!course) notFound();
 
-  if (!course) {
-    notFound();
-  }
+  const modules = await caller.admin.module.listByCourse({
+    courseId: course.id,
+  });
 
   return (
     <div className="space-y-6">
@@ -139,9 +95,9 @@ export default async function CourseDetailPage({
           <CardContent className="flex flex-col p-0">
             {/* Image wrapper : full height on lg so image fills the card */}
             <div className="relative bg-muted rounded-t-lg w-full h-48 overflow-hidden">
-              {course.imageUrl ? (
+              {course.image ? (
                 <Image
-                  src={course.imageUrl}
+                  src={course.image}
                   alt={course.title}
                   fill
                   className="object-cover"
@@ -171,7 +127,7 @@ export default async function CourseDetailPage({
                   <AvatarImage src={course.instructorImage ?? undefined} />
                   <AvatarFallback>
                     {course.instructorName
-                      .split(" ")
+                      ?.split(" ")
                       .map((n) => n[0])
                       .join("")}
                   </AvatarFallback>
@@ -185,7 +141,8 @@ export default async function CourseDetailPage({
               <div className="gap-2 grid grid-cols-2 pt-2 border-t text-sm">
                 <div>
                   <p className="text-muted-foreground text-xs">Durée totale</p>
-                  <p className="font-medium">{course.duration}</p>
+                  {/* TODO: Replace with */}
+                  <p className="font-medium">15h 30min</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground text-xs">Créé le</p>
@@ -210,9 +167,10 @@ export default async function CourseDetailPage({
               <BookOpen className="w-4 h-4 text-muted-foreground" />
             </CardHeader>
             <CardContent className="flex-1">
-              <div className="font-bold text-2xl">{course.modulesCount}</div>
+              <div className="font-bold text-2xl">{modules.length}</div>
               <p className="text-muted-foreground text-xs">
-                {course.lessonsCount} leçons au total
+                {/* TODO: Replace with */}
+                {26} leçons au total
               </p>
             </CardContent>
           </Card>
@@ -223,7 +181,8 @@ export default async function CourseDetailPage({
               <Users className="w-4 h-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="font-bold text-2xl">{course.enrolledCount}</div>
+              {/* TODO: Replace with  */}
+              <div className="font-bold text-2xl">{6}</div>
               <p className="text-muted-foreground text-xs">
                 Inscrits à ce cours
               </p>
@@ -309,7 +268,7 @@ export default async function CourseDetailPage({
                           </h3>
                         </Link>
                         <p className="text-muted-foreground text-sm">
-                          {module.lessonsCount} leçons
+                          {5} leçons
                         </p>
                       </div>
 
@@ -336,13 +295,11 @@ export default async function CourseDetailPage({
                   ))}
                 </div>
               )}
-              {modules.length > 0 && (
-                <Button variant="outline" asChild>
-                  <Link href={`/backoffice/courses/${courseId}/modules`}>
-                    Voir tous les modules
-                  </Link>
-                </Button>
-              )}
+              <Button variant="outline" asChild>
+                <Link href={`/backoffice/courses/${courseId}/modules`}>
+                  Voir tous les modules
+                </Link>
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>

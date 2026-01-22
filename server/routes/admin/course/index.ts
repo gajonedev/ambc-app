@@ -87,7 +87,7 @@ export const adminCourseRouter = createTRPCRouter({
           .limit(1);
 
         if (!foundCourse) {
-          throw new Error("Cours non trouvé.");
+          return null;
         }
 
         return foundCourse;

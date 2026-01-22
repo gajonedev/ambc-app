@@ -5,6 +5,7 @@ import { adminOnlyPage } from "@/server/utils";
 import { notFound } from "next/navigation";
 import { caller } from "@/trpc/server";
 import { ModulesTable } from "@/components/backoffice/modules";
+import { RouterOutputs } from "@/trpc/types";
 
 interface ModulesPageProps {
   params: Promise<{
@@ -17,7 +18,7 @@ export default async function ModulesPage({ params }: ModulesPageProps) {
   const { courseId } = await params;
 
   // Fetch course data
-  let course;
+  let course: RouterOutputs["admin"]["course"]["getByIdOrSlug"];
   try {
     course = await caller.admin.course.getByIdOrSlug({ id: courseId });
   } catch {
@@ -34,7 +35,7 @@ export default async function ModulesPage({ params }: ModulesPageProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex md:flex-row flex-col justify-between gap-4">
+      <div className="flex sm:flex-row flex-col justify-between gap-4">
         <div className="flex items-start gap-4">
           <Button variant="ghost" size="icon" asChild>
             <Link href={`/backoffice/courses/${courseId}`}>

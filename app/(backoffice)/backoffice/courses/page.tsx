@@ -31,12 +31,6 @@ export default async function BackofficeCoursesPage() {
         </Button>
       </div>
 
-      {courses.length > 0 && (
-        <div className="bg-muted p-4 rounded-md h-50 overflow-auto font-mono text-sm">
-          <pre>{JSON.stringify(courses, null, 2)}</pre>
-        </div>
-      )}
-
       {/* Stats */}
       <div className="gap-4 grid @md:grid-cols-2 @lg:grid-cols-2 @2xl:grid-cols-3">
         <Card>
