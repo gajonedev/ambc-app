@@ -2,6 +2,8 @@ import { ReactNode } from "react";
 import { BackofficeSidebar, BackofficeHeader } from "@/components/backoffice";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
+export const dynamic = "force-dynamic";
+
 export default function BackofficeLayout({
   children,
 }: {

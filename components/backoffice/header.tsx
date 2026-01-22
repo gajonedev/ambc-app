@@ -84,14 +84,19 @@ export function BackofficeHeader() {
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mx-2 h-4" />
       <Breadcrumb>
-        <BreadcrumbList>
+        <BreadcrumbList className="line-clamp-1">
           {breadcrumbs.map((crumb) => (
             <BreadcrumbItem key={crumb.href}>
               {crumb.isLast ? (
-                <BreadcrumbPage>{crumb.title}</BreadcrumbPage>
+                <BreadcrumbPage className="max-w-30 line-clamp-1">
+                  {crumb.title}
+                </BreadcrumbPage>
               ) : (
                 <>
-                  <BreadcrumbLink href={crumb.href}>
+                  <BreadcrumbLink
+                    href={crumb.href}
+                    className="max-w-40 line-clamp-1"
+                  >
                     {crumb.title}
                   </BreadcrumbLink>
                   <BreadcrumbSeparator />

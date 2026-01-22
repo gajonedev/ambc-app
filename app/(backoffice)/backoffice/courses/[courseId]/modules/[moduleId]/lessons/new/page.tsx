@@ -11,23 +11,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Upload, Plus, X } from "lucide-react";
+import { ArrowLeft, Upload, Plus } from "lucide-react";
+import { adminOnlyPage } from "@/server/utils";
 
 interface NewLessonPageProps {
   params: Promise<{
-    id: string;
+    courseId: string;
+    moduleId: string;
   }>;
 }
 
 export default async function NewLessonPage({ params }: NewLessonPageProps) {
-  const { id } = await params;
+  await adminOnlyPage();
+  const { courseId, moduleId } = await params;
 
   return (
     <div className="space-y-6 max-w-3xl">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" asChild>
-          <Link href={`/backoffice/modules/${id}/lessons`}>
+          <Link
+            href={`/backoffice/courses/${courseId}/modules/${moduleId}/lessons`}
+          >
             <ArrowLeft className="w-5 h-5" />
           </Link>
         </Button>
@@ -66,6 +71,17 @@ export default async function NewLessonPage({ params }: NewLessonPageProps) {
                 rows={4}
               />
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="order">Ordre d&apos;affichage</Label>
+              <Input
+                id="order"
+                type="number"
+                min="1"
+                defaultValue="1"
+                className="w-24"
+              />
+            </div>
           </CardContent>
         </Card>
 
@@ -84,7 +100,9 @@ export default async function NewLessonPage({ params }: NewLessonPageProps) {
               <p className="mb-4 text-muted-foreground text-sm">
                 ou cliquez pour sélectionner
               </p>
-              <Button variant="outline">Sélectionner un fichier</Button>
+              <Button type="button" variant="outline">
+                Sélectionner un fichier
+              </Button>
               <p className="mt-4 text-muted-foreground text-xs">
                 Formats acceptés : MP4, MOV. Taille max : 500MB
               </p>
@@ -102,43 +120,30 @@ export default async function NewLessonPage({ params }: NewLessonPageProps) {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {/* Example resource (would be dynamic) */}
-              <div className="flex items-center gap-4 bg-muted/50 p-3 rounded-lg">
-                <div className="flex-1">
-                  <p className="font-medium text-sm">document.pdf</p>
-                  <p className="text-muted-foreground text-xs">245 KB</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-destructive"
-                >
-                  <X className="w-4 h-4" />
+              <div className="p-4 border-2 border-dashed rounded-lg text-center">
+                <Button type="button" variant="outline">
+                  <Plus className="mr-2 w-4 h-4" />
+                  Ajouter une ressource
                 </Button>
               </div>
-
-              <Button variant="outline" className="w-full">
-                <Plus className="mr-2 w-4 h-4" />
-                Ajouter une ressource
-              </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Settings */}
+        {/* Publishing */}
         <Card>
           <CardHeader>
-            <CardTitle>Paramètres</CardTitle>
+            <CardTitle>Publication</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <Label>Publier la leçon</Label>
+          <CardContent>
+            <div className="flex justify-between items-center p-4 border rounded-lg">
+              <div className="space-y-0.5">
+                <Label htmlFor="published">Publier la leçon</Label>
                 <p className="text-muted-foreground text-sm">
-                  Rendre cette leçon visible pour les apprenants
+                  Rendre cette leçon visible aux apprenants
                 </p>
               </div>
-              <Switch />
+              <Switch id="published" />
             </div>
           </CardContent>
         </Card>
@@ -147,7 +152,11 @@ export default async function NewLessonPage({ params }: NewLessonPageProps) {
         <div className="flex items-center gap-4">
           <Button type="submit">Créer la leçon</Button>
           <Button type="button" variant="outline" asChild>
-            <Link href={`/backoffice/modules/${id}/lessons`}>Annuler</Link>
+            <Link
+              href={`/backoffice/courses/${courseId}/modules/${moduleId}/lessons`}
+            >
+              Annuler
+            </Link>
           </Button>
         </div>
       </form>

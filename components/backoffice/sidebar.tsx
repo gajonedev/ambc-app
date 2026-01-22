@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  BookOpen,
   Users,
   CreditCard,
   Settings,
@@ -37,11 +36,6 @@ const navMain = [
     title: "Formations",
     url: "/backoffice/courses",
     icon: GraduationCap,
-  },
-  {
-    title: "Modules & Leçons",
-    url: "/backoffice/modules",
-    icon: BookOpen,
   },
   {
     title: "Apprenants",
