@@ -2,12 +2,16 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Users, BookOpen } from "lucide-react";
-import { mockCourses, mockCourseStats } from "@/lib/mock-data";
 import { CoursesTable } from "@/components/backoffice/courses/courses-table";
 import { columns } from "@/components/backoffice/courses/columns";
+import { caller } from "@/trpc/server";
 
-export default function BackofficeCoursesPage() {
-  const stats = mockCourseStats;
+export default async function BackofficeCoursesPage() {
+  const courses = await caller.admin.course.list();
+  const totalCourses = courses.length;
+  const publishedCourses = courses.filter(
+    (course) => course.isPublished,
+  ).length;
 
   return (
     <div className="@container space-y-6">
@@ -27,6 +31,12 @@ export default function BackofficeCoursesPage() {
         </Button>
       </div>
 
+      {courses.length > 0 && (
+        <div className="bg-muted p-4 rounded-md h-50 overflow-auto font-mono text-sm">
+          <pre>{JSON.stringify(courses, null, 2)}</pre>
+        </div>
+      )}
+
       {/* Stats */}
       <div className="gap-4 grid @md:grid-cols-2 @lg:grid-cols-2 @2xl:grid-cols-3">
         <Card>
@@ -37,9 +47,9 @@ export default function BackofficeCoursesPage() {
             <BookOpen className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl">{stats.totalCourses}</div>
+            <div className="font-bold text-2xl">{totalCourses}</div>
             <p className="text-muted-foreground text-xs">
-              {stats.publishedCourses} publiée(s)
+              {publishedCourses} publiée(s)
             </p>
           </CardContent>
         </Card>
@@ -52,7 +62,7 @@ export default function BackofficeCoursesPage() {
             <Users className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl">{stats.totalEnrollments}</div>
+            <div className="font-bold text-2xl">56</div>
             <p className="text-muted-foreground text-xs">Apprenants inscrits</p>
           </CardContent>
         </Card>
@@ -66,9 +76,9 @@ export default function BackofficeCoursesPage() {
           <CardContent>
             <div
               className="font-bold text-2xl line-clamp-1"
-              title={`${stats.totalRevenue} XOF`}
+              title={`200000 XOF`}
             >
-              {stats.totalRevenue.toLocaleString()} XOF
+              20 400 000 XOF
             </div>
             <p className="text-muted-foreground text-xs line-clamp-1">
               Toutes formations confondues
@@ -83,7 +93,7 @@ export default function BackofficeCoursesPage() {
           <CardTitle>Liste des formations</CardTitle>
         </CardHeader>
         <CardContent>
-          <CoursesTable columns={columns} data={mockCourses} />
+          <CoursesTable columns={columns} data={courses} />
         </CardContent>
       </Card>
     </div>

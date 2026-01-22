@@ -41,6 +41,7 @@ export const adminCourseRouter = createTRPCRouter({
         .from(course)
         .orderBy(desc(course.createdAt))
         .limit(100);
+
       return courses;
     } catch (error) {
       console.error("Error fetching courses:", error);

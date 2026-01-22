@@ -19,13 +19,13 @@ export const createCourseFormSchema = z.object({
   image: z
     .string()
     .min(1, "Veuillez importer l'image avant de valider le formulaire"),
-  price: z.string(),
-  currency: z.string(),
+  price: z.string().min(1, "Le prix est requis"),
+  currency: z.string().min(1, "La devise est requise"),
   isPublished: z.boolean(),
   isFeatured: z.boolean(),
-  instructorName: z.string(),
+  instructorName: z.string().min(1, "Le nom du formateur est requis"),
   instructorBio: z.string(),
-  instructorImage: z.string(),
+  instructorImage: z.string().min(1, "Veuillez importer l'image du formateur"),
 });
 
 export type CreateCourseFormInput = z.infer<typeof createCourseFormSchema>;

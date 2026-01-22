@@ -20,12 +20,16 @@ import {
   Trash2,
   Copy,
   ExternalLink,
+  ImageIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { MockCourse } from "@/lib/mock-data";
+import Image from "next/image";
 import { toast } from "sonner";
+import { RouterOutputs } from "@/trpc/types";
 
-export const columns: ColumnDef<MockCourse>[] = [
+type Course = RouterOutputs["admin"]["course"]["list"][number];
+
+export const columns: ColumnDef<Course>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -47,6 +51,33 @@ export const columns: ColumnDef<MockCourse>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    accessorKey: "image",
+    header: "Image",
+    cell: ({ row }) => {
+      const imageUrl = row.original.image;
+      return (
+        <div className="flex justify-center items-center">
+          {imageUrl ? (
+            <div className="relative rounded-full w-10 h-10 overflow-hidden">
+              <Image
+                src={imageUrl}
+                alt={row.original.title}
+                fill
+                className="object-cover"
+                sizes="64px"
+              />
+            </div>
+          ) : (
+            <div className="flex justify-center items-center bg-muted rounded-full w-10 h-10">
+              <ImageIcon className="w-5 h-5 text-muted-foreground" />
+            </div>
+          )}
+        </div>
+      );
+    },
+    enableSorting: false,
   },
   {
     accessorKey: "title",
@@ -77,7 +108,7 @@ export const columns: ColumnDef<MockCourse>[] = [
     accessorKey: "instructor.name",
     header: "Formateur",
     cell: ({ row }) => {
-      return <div className="text-sm">{row.original.instructor.name}</div>;
+      return <div className="text-sm">{row.original.instructorName}</div>;
     },
   },
   {
