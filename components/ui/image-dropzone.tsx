@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import imageCompression from "browser-image-compression";
 import { ImageIcon, Loader, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -19,6 +20,20 @@ interface ImageDropzoneProps {
   endpoint: keyof OurFileRouter;
   disabled?: boolean;
   className?: string;
+  /** Options de compression (optionnel) */
+  compressionOptions?: {
+    maxSizeMB?: number;
+    maxWidthOrHeight?: number;
+    quality?: number;
+  };
+}
+
+interface ImageDropzoneProps {
+  value?: string;
+  onChange: (url: string) => void;
+  endpoint: keyof OurFileRouter;
+  disabled?: boolean;
+  className?: string;
 }
 
 export function ImageDropzone({
@@ -27,11 +42,23 @@ export function ImageDropzone({
   endpoint,
   disabled,
   className,
+  compressionOptions,
 }: ImageDropzoneProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
+  const [isCompressing, setIsCompressing] = useState(false);
   const [imageUploaded, setImageUploaded] = useState(false);
+
+  // Options de compression par défaut (mémoïsées)
+  const compressionConfig = useMemo(
+    () => ({
+      maxSizeMB: compressionOptions?.maxSizeMB ?? 1,
+      maxWidthOrHeight: compressionOptions?.maxWidthOrHeight ?? 1920,
+      useWebWorker: true,
+    }),
+    [compressionOptions?.maxSizeMB, compressionOptions?.maxWidthOrHeight],
+  );
 
   // UploadThing upload hook
   const { startUpload, isUploading } = useUploadThing(endpoint, {
@@ -66,15 +93,46 @@ export function ImageDropzone({
   });
 
   // Dropzone setup
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const selectedFile = acceptedFiles[0];
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      const selectedFile = acceptedFiles[0];
 
-    if (selectedFile) {
-      setFile(selectedFile);
-      const objectUrl = URL.createObjectURL(selectedFile);
-      setPreview(objectUrl);
-    }
-  }, []);
+      if (selectedFile) {
+        // Compresser l'image si c'est une image
+        if (selectedFile.type.startsWith("image/")) {
+          setIsCompressing(true);
+          try {
+            const compressedFile = await imageCompression(
+              selectedFile,
+              compressionConfig,
+            );
+
+            // Créer un nouveau File avec le nom original
+            const finalFile = new File([compressedFile], selectedFile.name, {
+              type: compressedFile.type,
+            });
+
+            setFile(finalFile);
+            const objectUrl = URL.createObjectURL(finalFile);
+            setPreview(objectUrl);
+          } catch (error) {
+            console.error("Erreur de compression:", error);
+            // Fallback: utiliser le fichier original
+            setFile(selectedFile);
+            const objectUrl = URL.createObjectURL(selectedFile);
+            setPreview(objectUrl);
+          } finally {
+            setIsCompressing(false);
+          }
+        } else {
+          setFile(selectedFile);
+          const objectUrl = URL.createObjectURL(selectedFile);
+          setPreview(objectUrl);
+        }
+      }
+    },
+    [compressionConfig],
+  );
 
   // Initialize react-dropzone
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -84,7 +142,15 @@ export function ImageDropzone({
     },
     maxFiles: 1,
     disabled: disabled || isUploading,
-    maxSize: 4 * 1024 * 1024, // 4MB
+    maxSize: 8 * 1024 * 1024, // 8MB
+    onError: (err) => {
+      toast.error("Erreur lors de la sélection du fichier: " + err.message);
+    },
+    onDropRejected: (f) => {
+      toast.error(
+        "Erreur lors de la sélection du fichier: " + f[0].errors[0].message,
+      );
+    },
   });
 
   // Handlers
@@ -124,7 +190,7 @@ export function ImageDropzone({
               size="icon"
               className="-top-2 -right-2 absolute w-6 h-6"
               onClick={handleRemove}
-              disabled={disabled || isUploading}
+              disabled={disabled || isUploading || isCompressing}
             >
               <X className="w-3 h-3" />
             </Button>
@@ -158,18 +224,26 @@ export function ImageDropzone({
             </>
           )}
           <p className="text-muted-foreground/75 text-xs">
-            PNG, JPG, WEBP ou GIF (max 4MB)
+            PNG, JPG, WEBP ou GIF
           </p>
         </div>
       )}
 
+      {/* Indicateur de compression */}
+      {isCompressing && (
+        <div className="relative flex justify-center items-center gap-2 bg-muted/50 p-4 border rounded-lg">
+          <Loader className="w-4 h-4 animate-spin" />
+          <span className="text-muted-foreground text-sm">Traitement...</span>
+        </div>
+      )}
+
       {/* Bouton Importer - visible quand une image est en preview */}
-      {preview && file && (
+      {preview && file && !isCompressing && (
         <div className="space-y-2">
           <Button
             type="button"
             onClick={handleUpload}
-            disabled={isUploading}
+            disabled={isUploading || isCompressing}
             className="w-full"
           >
             {isUploading ? (
