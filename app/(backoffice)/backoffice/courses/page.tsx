@@ -1,37 +1,16 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Plus,
-  MoreHorizontal,
-  Pencil,
-  Trash2,
-  Eye,
-  Users,
-  BookOpen,
-} from "lucide-react";
+import { Plus, Users, BookOpen } from "lucide-react";
 import { mockCourses, mockCourseStats } from "@/lib/mock-data";
+import { CoursesTable } from "@/components/backoffice/courses/courses-table";
+import { columns } from "@/components/backoffice/courses/columns";
 
 export default function BackofficeCoursesPage() {
   const stats = mockCourseStats;
 
   return (
-    <div className="space-y-6">
+    <div className="@container space-y-6">
       {/* Header */}
       <div className="flex sm:flex-row flex-col justify-between gap-4">
         <div>
@@ -42,20 +21,20 @@ export default function BackofficeCoursesPage() {
         </div>
         <Button asChild>
           <Link href="/backoffice/courses/new">
-            <Plus className="mr-2 w-4 h-4" />
+            <Plus />
             Nouvelle formation
           </Link>
         </Button>
       </div>
 
       {/* Stats */}
-      <div className="gap-4 grid @md/container:grid-cols-2 lg:grid-cols-4">
+      <div className="gap-4 grid @md:grid-cols-2 @lg:grid-cols-2 @2xl:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row justify-between items-center pb-2">
             <CardTitle className="font-medium text-sm">
               Total formations
             </CardTitle>
-            <BookOpen className="w-4 h-4 text-muted-foreground" />
+            <BookOpen className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="font-bold text-2xl">{stats.totalCourses}</div>
@@ -70,7 +49,7 @@ export default function BackofficeCoursesPage() {
             <CardTitle className="font-medium text-sm">
               Total inscriptions
             </CardTitle>
-            <Users className="w-4 h-4 text-muted-foreground" />
+            <Users className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="font-bold text-2xl">{stats.totalEnrollments}</div>
@@ -78,17 +57,20 @@ export default function BackofficeCoursesPage() {
           </CardContent>
         </Card>
 
-        <Card className="md:col-span-2">
+        <Card className="@md:col-span-2 @lg:col-span-2 @2xl:col-span-1">
           <CardHeader className="flex flex-row justify-between items-center pb-2">
             <CardTitle className="font-medium text-sm">
               Revenus totaux
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl">
+            <div
+              className="font-bold text-2xl line-clamp-1"
+              title={`${stats.totalRevenue} XOF`}
+            >
               {stats.totalRevenue.toLocaleString()} XOF
             </div>
-            <p className="text-muted-foreground text-xs">
+            <p className="text-muted-foreground text-xs line-clamp-1">
               Toutes formations confondues
             </p>
           </CardContent>
@@ -101,75 +83,7 @@ export default function BackofficeCoursesPage() {
           <CardTitle>Liste des formations</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Formation</TableHead>
-                <TableHead>Prix</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead className="text-center">Modules</TableHead>
-                <TableHead className="text-center">Inscrits</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {mockCourses.map((course) => (
-                <TableRow key={course.id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium">{course.title}</p>
-                      <p className="text-muted-foreground text-sm">
-                        /{course.slug}
-                      </p>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {course.price.toLocaleString()} {course.currency}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={course.isPublished ? "default" : "secondary"}
-                    >
-                      {course.isPublished ? "Publiée" : "Brouillon"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {course.modulesCount}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {course.enrolledCount}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem asChild>
-                          <Link href={`/backoffice/courses/${course.id}`}>
-                            <Eye className="mr-2 w-4 h-4" />
-                            Voir
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link href={`/backoffice/courses/${course.id}/edit`}>
-                            <Pencil className="mr-2 w-4 h-4" />
-                            Modifier
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
-                          <Trash2 className="mr-2 w-4 h-4" />
-                          Supprimer
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <CoursesTable columns={columns} data={mockCourses} />
         </CardContent>
       </Card>
     </div>

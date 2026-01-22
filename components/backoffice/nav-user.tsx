@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut, Settings, User, MoreVertical } from "lucide-react";
+import { LogOut, Settings, User, MoreVertical, Sun, Moon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -18,6 +18,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { DisconnectButton } from "../dashboard/nav-user";
+import { useTheme } from "next-themes";
 
 interface NavUserProps {
   user: {
@@ -39,6 +41,7 @@ function getInitials(name: string) {
 
 export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar();
+  const { setTheme, theme } = useTheme();
 
   return (
     <SidebarMenu>
@@ -100,12 +103,22 @@ export function NavUser({ user }: NavUserProps) {
                   Mon profil
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTheme(theme === "light" ? "dark" : "light");
+                }}
+              >
+                {theme === "light" ? (
+                  <Sun className="mr-2 size-4" />
+                ) : (
+                  <Moon className="mr-2 size-4" />
+                )}
+                {theme === "light" ? "Mode sombre" : "Mode clair"}
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
-              <LogOut className="mr-2 size-4" />
-              Déconnexion
-            </DropdownMenuItem>
+            <DisconnectButton />
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

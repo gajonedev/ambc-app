@@ -23,8 +23,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings, User, ChevronDown } from "lucide-react";
+import { LogOut, Settings, User, ChevronDown, Sun, Moon } from "lucide-react";
 import { useTRPC } from "@/trpc/client";
+import { DisconnectButton } from "../dashboard/nav-user";
+import { useTheme } from "next-themes";
 
 const routeTitles: Record<string, string> = {
   "/backoffice": "Dashboard",
@@ -54,6 +56,7 @@ function getInitials(name: string) {
 
 export function BackofficeHeader() {
   const pathname = usePathname();
+  const { setTheme, theme } = useTheme();
 
   // Build breadcrumb items
   const getBreadcrumbs = () => {
@@ -139,12 +142,22 @@ export function BackofficeHeader() {
                 Mon profil
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.preventDefault();
+                setTheme(theme === "light" ? "dark" : "light");
+              }}
+            >
+              {theme === "light" ? (
+                <Sun className="mr-2 size-4" />
+              ) : (
+                <Moon className="mr-2 size-4" />
+              )}
+              {theme === "light" ? "Mode sombre" : "Mode clair"}
+            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">
-            <LogOut className="mr-2 size-4" />
-            Déconnexion
-          </DropdownMenuItem>
+          <DisconnectButton />
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

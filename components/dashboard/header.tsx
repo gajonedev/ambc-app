@@ -30,10 +30,13 @@ import {
   BarChart3,
   BookOpen,
   AlertCircleIcon,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Skeleton } from "../ui/skeleton";
 import { DisconnectButton } from "./nav-user";
+import { useTheme } from "next-themes";
 
 const routeTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
@@ -58,6 +61,7 @@ function getInitials(name: string) {
 export function DashboardHeader() {
   const pathname = usePathname();
   const { data, error, isPending } = authClient.useSession();
+  const { theme, setTheme } = useTheme();
 
   // Build breadcrumb items
   const getBreadcrumbs = () => {
@@ -163,6 +167,19 @@ export function DashboardHeader() {
                   <CreditCard className="mr-2 size-4" />
                   Paiement
                 </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTheme(theme === "light" ? "dark" : "light");
+                }}
+              >
+                {theme === "light" ? (
+                  <Sun className="mr-2 size-4" />
+                ) : (
+                  <Moon className="mr-2 size-4" />
+                )}
+                {theme === "light" ? "Mode sombre" : "Mode clair"}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

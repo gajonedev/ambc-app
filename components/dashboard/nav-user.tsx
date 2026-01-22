@@ -7,6 +7,8 @@ import {
   UserIcon,
   MoreVertical,
   Loader,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -38,6 +40,7 @@ import { Button } from "../ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTheme } from "next-themes";
 
 interface NavUserProps {
   user: {
@@ -58,6 +61,7 @@ function getInitials(name: string) {
 
 export function NavUser({ user }: { user: User }) {
   const { isMobile } = useSidebar();
+  const { theme, setTheme } = useTheme();
 
   return (
     <SidebarMenu>
@@ -118,6 +122,19 @@ export function NavUser({ user }: { user: User }) {
                   <CreditCard className="mr-2 size-4" />
                   Paiement
                 </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTheme(theme === "light" ? "dark" : "light");
+                }}
+              >
+                {theme === "light" ? (
+                  <Sun className="mr-2 size-4" />
+                ) : (
+                  <Moon className="mr-2 size-4" />
+                )}
+                {theme === "light" ? "Mode sombre" : "Mode clair"}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
