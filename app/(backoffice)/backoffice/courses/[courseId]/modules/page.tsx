@@ -4,7 +4,10 @@ import { ArrowLeft, Plus } from "lucide-react";
 import { adminOnlyPage } from "@/server/utils";
 import { notFound } from "next/navigation";
 import { caller } from "@/trpc/server";
-import { getModuleColumns, ModulesTable } from "@/components/backoffice/modules";
+import {
+  getModuleColumns,
+  ModulesTable,
+} from "@/components/backoffice/modules";
 
 interface ModulesPageProps {
   params: Promise<{

@@ -64,7 +64,7 @@ export function ModulesTable<TData, TValue>({
     { id: "order", desc: false },
   ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -121,7 +121,7 @@ export function ModulesTable<TData, TValue>({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-9">
                 <SlidersHorizontal className="mr-2 w-4 h-4" />
-                <span className="sm:inline hidden">Statut</span>
+                <span className="hidden sm:inline">Statut</span>
                 {statusFilter && (
                   <Badge variant="secondary" className="ml-2 px-1.5">
                     {Array.isArray(statusFilter.value)
@@ -199,7 +199,7 @@ export function ModulesTable<TData, TValue>({
               .filter(
                 (column) =>
                   typeof column.accessorFn !== "undefined" &&
-                  column.getCanHide()
+                  column.getCanHide(),
               )
               .map((column) => {
                 const columnLabels: Record<string, string> = {
@@ -238,7 +238,7 @@ export function ModulesTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -257,7 +257,7 @@ export function ModulesTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
