@@ -87,7 +87,7 @@ export function UpdateModuleForm({
       onError: (error) => {
         toast.error(error.message || "Erreur lors de la mise à jour");
       },
-    })
+    }),
   );
 
   const { mutate: deleteModule, isPending: isDeleting } = useMutation(
@@ -100,7 +100,7 @@ export function UpdateModuleForm({
       onError: (error) => {
         toast.error(error.message || "Erreur lors de la suppression");
       },
-    })
+    }),
   );
 
   const onSubmit = (data: UpdateModuleFormInput) => {
@@ -175,7 +175,9 @@ export function UpdateModuleForm({
                       min="1"
                       className="w-24"
                       value={field.value}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value) || 1)
+                      }
                     />
                   </FormControl>
                   <FormDescription>
@@ -239,7 +241,8 @@ export function UpdateModuleForm({
               <AlertDialogHeader>
                 <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Cette action est irréversible. Le module &quot;{moduleData.title}
+                  Cette action est irréversible. Le module &quot;
+                  {moduleData.title}
                   &quot; et toutes ses leçons seront définitivement supprimés.
                 </AlertDialogDescription>
               </AlertDialogHeader>
@@ -247,7 +250,7 @@ export function UpdateModuleForm({
                 <AlertDialogCancel>Annuler</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleDelete}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                 >
                   {isDeleting && (
                     <Loader className="mr-2 w-4 h-4 animate-spin" />
