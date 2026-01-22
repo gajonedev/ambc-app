@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   ArrowLeft,
   Edit,
@@ -20,6 +22,7 @@ import {
   Plus,
   GripVertical,
   Trash2,
+  ImageIcon,
 } from "lucide-react";
 import { adminOnlyPage } from "@/server/utils";
 import { notFound } from "next/navigation";
@@ -45,15 +48,17 @@ export default async function CourseDetailPage({
     title: "Conception de Plans Architecturaux",
     slug: "conception-plans-architecturaux",
     description:
-      "Apprenez à concevoir des plans architecturaux professionnels. Cette formation complète vous guidera à travers toutes les étapes de la conception.",
+      "Apprenez à concevoir des plans architecturaux professionnels. Cette formation complète vous guidera à travers toutes les étapes de la conception, du croquis initial aux plans détaillés.",
     price: 50000,
     currency: "XOF",
     isPublished: true,
-    imageUrl: null,
+    imageUrl: "/placeholder-course.jpg",
     instructorName: "John Formateur",
+    instructorImage: null,
     modulesCount: 5,
     lessonsCount: 20,
     enrolledCount: 45,
+    duration: "12h 30min",
     createdAt: "2026-01-10",
   };
 
@@ -108,7 +113,7 @@ export default async function CourseDetailPage({
                 {course.isPublished ? "Publiée" : "Brouillon"}
               </Badge>
             </div>
-            <p className="text-muted-foreground">/{course.slug}</p>
+            {/* <p className="text-muted-foreground">/{course.slug}</p> */}
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -127,41 +132,116 @@ export default async function CourseDetailPage({
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="gap-4 grid md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row justify-between items-center pb-2">
-            <CardTitle className="font-medium text-sm">Modules</CardTitle>
-            <BookOpen className="w-4 h-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">{course.modulesCount}</div>
-            <p className="text-muted-foreground text-xs">
-              {course.lessonsCount} leçons au total
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row justify-between items-center pb-2">
-            <CardTitle className="font-medium text-sm">Apprenants</CardTitle>
-            <Users className="w-4 h-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">{course.enrolledCount}</div>
-            <p className="text-muted-foreground text-xs">Inscrits à ce cours</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row justify-between items-center pb-2">
-            <CardTitle className="font-medium text-sm">Prix</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">
-              {course.price.toLocaleString()} {course.currency}
+      {/* Course Info & Stats */}
+      <div className="items-stretch gap-4 grid grid-cols-1 md:grid-cols-[460px_1fr]">
+        {/* Left column — Card (image) */}
+        <Card className="flex flex-col md:col-span-1 p-0 w-full h-full">
+          <CardContent className="flex flex-col p-0">
+            {/* Image wrapper : full height on lg so image fills the card */}
+            <div className="relative bg-muted rounded-t-lg w-full h-48 overflow-hidden">
+              {course.imageUrl ? (
+                <Image
+                  src={course.imageUrl}
+                  alt={course.title}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex justify-center items-center w-full h-full">
+                  <ImageIcon className="w-12 h-12 text-muted-foreground" />
+                </div>
+              )}
+
+              <Badge
+                variant={course.isPublished ? "default" : "secondary"}
+                className="top-3 right-3 absolute"
+              >
+                {course.isPublished ? "Publiée" : "Brouillon"}
+              </Badge>
             </div>
-            <p className="text-muted-foreground text-xs">Par apprenant</p>
+
+            {/* Body that stretches to fill remaining vertical space if needed */}
+            <div className="flex-1 space-y-4 p-6">
+              <p className="text-muted-foreground text-sm line-clamp-3">
+                {course.description}
+              </p>
+
+              <div className="flex items-center gap-3 pt-2 border-t">
+                <Avatar className="w-10 h-10">
+                  <AvatarImage src={course.instructorImage ?? undefined} />
+                  <AvatarFallback>
+                    {course.instructorName
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="font-medium text-sm">{course.instructorName}</p>
+                  <p className="text-muted-foreground text-xs">Formateur</p>
+                </div>
+              </div>
+
+              <div className="gap-2 grid grid-cols-2 pt-2 border-t text-sm">
+                <div>
+                  <p className="text-muted-foreground text-xs">Durée totale</p>
+                  <p className="font-medium">{course.duration}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-xs">Créé le</p>
+                  <p className="font-medium">
+                    {new Date(course.createdAt).toLocaleDateString("fr-FR", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
+
+        {/* Right column — stats grid */}
+        <div className="gap-4 grid grid-cols-1 lg:grid-cols-2 w-full">
+          <Card className="flex flex-col w-full h-full">
+            <CardHeader className="flex flex-row justify-between items-center pb-2">
+              <CardTitle className="font-medium text-sm">Modules</CardTitle>
+              <BookOpen className="w-4 h-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent className="flex-1">
+              <div className="font-bold text-2xl">{course.modulesCount}</div>
+              <p className="text-muted-foreground text-xs">
+                {course.lessonsCount} leçons au total
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="flex flex-col w-full h-full">
+            <CardHeader className="flex flex-row justify-between items-center pb-2">
+              <CardTitle className="font-medium text-sm">Apprenants</CardTitle>
+              <Users className="w-4 h-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="font-bold text-2xl">{course.enrolledCount}</div>
+              <p className="text-muted-foreground text-xs">
+                Inscrits à ce cours
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="flex flex-col lg:col-span-2 w-full h-full">
+            <CardHeader className="flex flex-row justify-between items-center pb-2">
+              <CardTitle className="font-medium text-sm">Prix</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="font-bold text-2xl">
+                {course.price.toLocaleString()} {course.currency}
+              </div>
+              <p className="text-muted-foreground text-xs">Par apprenant</p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -213,10 +293,6 @@ export default async function CourseDetailPage({
                       key={module.id}
                       className="flex items-center gap-4 bg-muted/50 hover:bg-muted p-4 rounded-lg transition-colors"
                     >
-                      <button className="text-muted-foreground hover:text-foreground cursor-grab">
-                        <GripVertical className="w-5 h-5" />
-                      </button>
-
                       <div className="flex justify-center items-center bg-primary/10 rounded-full w-10 h-10 shrink-0">
                         <span className="font-semibold text-primary">
                           {module.order}
@@ -255,30 +331,6 @@ export default async function CourseDetailPage({
                             </span>
                           )}
                         </span>
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="icon" asChild>
-                          <Link
-                            href={`/backoffice/courses/${courseId}/modules/${module.id}/lessons`}
-                          >
-                            <BookOpen className="w-4 h-4" />
-                          </Link>
-                        </Button>
-                        <Button variant="ghost" size="icon" asChild>
-                          <Link
-                            href={`/backoffice/courses/${courseId}/modules/${module.id}`}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Link>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-destructive"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
                       </div>
                     </div>
                   ))}

@@ -33,12 +33,14 @@ export function ImageDropzone({
   const [progress, setProgress] = useState(0);
   const [imageUploaded, setImageUploaded] = useState(false);
 
+  // UploadThing upload hook
   const { startUpload, isUploading } = useUploadThing(endpoint, {
     onClientUploadComplete: (res) => {
       if (res?.[0]?.ufsUrl) {
         onChange(res[0].ufsUrl);
         toast.success("Fichier importé avec succès !");
       }
+
       // Nettoyer le preview
       if (preview) {
         URL.revokeObjectURL(preview);
@@ -49,6 +51,7 @@ export function ImageDropzone({
       setFile(null);
       setProgress(0);
     },
+
     onUploadError: (error) => {
       toast.error(
         "Erreur d'importation du fichier: " + error.message ||
@@ -56,13 +59,16 @@ export function ImageDropzone({
       );
       setProgress(0);
     },
+
     onUploadProgress: (p) => {
       setProgress(p);
     },
   });
 
+  // Dropzone setup
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const selectedFile = acceptedFiles[0];
+
     if (selectedFile) {
       setFile(selectedFile);
       const objectUrl = URL.createObjectURL(selectedFile);
@@ -70,6 +76,7 @@ export function ImageDropzone({
     }
   }, []);
 
+  // Initialize react-dropzone
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
@@ -80,6 +87,7 @@ export function ImageDropzone({
     maxSize: 4 * 1024 * 1024, // 4MB
   });
 
+  // Handlers
   const handleUpload = async () => {
     if (!file) return;
     await startUpload([file]);
