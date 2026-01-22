@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -50,16 +49,21 @@ import {
   BookOpen,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { getModuleColumns } from "./columns";
+import { RouterOutputs } from "@/trpc/types";
 
-interface ModulesTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+type Module = RouterOutputs["admin"]["module"]["listByCourse"][number];
+
+interface ModulesTableProps {
+  courseId: string;
+  data: Module[];
 }
 
-export function ModulesTable<TData, TValue>({
-  columns,
-  data,
-}: ModulesTableProps<TData, TValue>) {
+export function ModulesTable({ courseId, data }: ModulesTableProps) {
+  const columns = React.useMemo(
+    () => getModuleColumns({ courseId }),
+    [courseId]
+  );
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "order", desc: false },
   ]);

@@ -4,10 +4,7 @@ import { ArrowLeft, Plus } from "lucide-react";
 import { adminOnlyPage } from "@/server/utils";
 import { notFound } from "next/navigation";
 import { caller } from "@/trpc/server";
-import {
-  getModuleColumns,
-  ModulesTable,
-} from "@/components/backoffice/modules";
+import { ModulesTable } from "@/components/backoffice/modules";
 
 interface ModulesPageProps {
   params: Promise<{
@@ -33,8 +30,6 @@ export default async function ModulesPage({ params }: ModulesPageProps) {
 
   // Fetch modules
   const modules = await caller.admin.module.listByCourse({ courseId });
-
-  const columns = getModuleColumns({ courseId });
 
   return (
     <div className="space-y-6">
@@ -64,7 +59,7 @@ export default async function ModulesPage({ params }: ModulesPageProps) {
       </div>
 
       {/* Modules Table */}
-      <ModulesTable columns={columns} data={modules} />
+      <ModulesTable courseId={courseId} data={modules} />
     </div>
   );
 }
