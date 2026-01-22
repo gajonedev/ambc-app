@@ -62,7 +62,7 @@ interface ModulesTableProps {
 export function ModulesTable({ courseId, data }: ModulesTableProps) {
   const columns = React.useMemo(
     () => getModuleColumns({ courseId }),
-    [courseId]
+    [courseId],
   );
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "order", desc: false },
