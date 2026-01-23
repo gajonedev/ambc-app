@@ -183,8 +183,14 @@ export function DisconnectButton() {
             reconnecter pour continuer.
           </DialogDescription>
           <DialogFooter>
-            <DialogClose disabled={loading}>Annuler</DialogClose>
-            <Button onClick={disconnectUser} disabled={loading}>
+            <Button variant="outline" disabled={loading}>
+              Annuler
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={disconnectUser}
+              disabled={loading}
+            >
               {loading ? (
                 <>
                   <Spinner />
