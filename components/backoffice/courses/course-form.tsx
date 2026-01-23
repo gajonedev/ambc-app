@@ -456,6 +456,27 @@ export function CourseForm({ mode, user, courseData }: CourseFormProps) {
           </CardContent>
         </Card>
 
+        {/* Actions */}
+        <div className="flex max-sm:flex-col justify-end items-center gap-4">
+          <Button type="button" variant="outline" asChild disabled={isPending}>
+            <Link
+              href={
+                isEditMode && courseData
+                  ? `/backoffice/courses/${courseData.id}`
+                  : "/backoffice/courses"
+              }
+            >
+              Annuler
+            </Link>
+          </Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending && <Loader className="mr-2 w-4 h-4 animate-spin" />}
+            {isEditMode
+              ? "Enregistrer les modifications"
+              : "Créer la formation"}
+          </Button>
+        </div>
+
         {/* Zone de danger (edit mode only) */}
         {isEditMode && courseData && (
           <Card className="border-destructive">
@@ -508,27 +529,6 @@ export function CourseForm({ mode, user, courseData }: CourseFormProps) {
             </CardContent>
           </Card>
         )}
-
-        {/* Actions */}
-        <div className="flex justify-end items-center gap-4">
-          <Button type="button" variant="outline" asChild disabled={isPending}>
-            <Link
-              href={
-                isEditMode && courseData
-                  ? `/backoffice/courses/${courseData.id}`
-                  : "/backoffice/courses"
-              }
-            >
-              Annuler
-            </Link>
-          </Button>
-          <Button type="submit" disabled={isPending}>
-            {isPending && <Loader className="mr-2 w-4 h-4 animate-spin" />}
-            {isEditMode
-              ? "Enregistrer les modifications"
-              : "Créer la formation"}
-          </Button>
-        </div>
       </form>
     </Form>
   );

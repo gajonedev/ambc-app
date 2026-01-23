@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { adminOnlyPage } from "@/server/utils";
 import { notFound } from "next/navigation";
 import { caller } from "@/trpc/server";
-import { UpdateModuleForm } from "@/components/backoffice/modules";
+import { ModuleForm } from "@/components/backoffice/modules";
 
 interface EditModulePageProps {
   params: Promise<{
@@ -45,7 +45,7 @@ export default async function EditModulePage({ params }: EditModulePageProps) {
       </div>
 
       {/* Form */}
-      <UpdateModuleForm moduleData={moduleData} courseId={courseId} />
+      <ModuleForm mode="edit" moduleData={moduleData} courseId={courseId} />
     </div>
   );
 }

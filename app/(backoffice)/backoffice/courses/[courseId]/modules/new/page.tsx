@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { adminOnlyPage } from "@/server/utils";
-import { CreateModuleForm } from "@/components/backoffice/modules";
+import { ModuleForm } from "@/components/backoffice/modules";
 import { caller } from "@/trpc/server";
 
 interface NewModulePageProps {
@@ -37,7 +37,11 @@ export default async function NewModulePage({ params }: NewModulePageProps) {
       </div>
 
       {/* Form */}
-      <CreateModuleForm courseId={courseId} defaultOrder={defaultOrder} />
+      <ModuleForm
+        mode="create"
+        courseId={courseId}
+        defaultOrder={defaultOrder}
+      />
     </div>
   );
 }

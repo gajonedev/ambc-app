@@ -174,7 +174,7 @@ export default async function ModuleDetailPage({
             <Link
               href={`/backoffice/courses/${courseId}/modules/${moduleId}/lessons/new`}
             >
-              <Plus className="mr-2 w-4 h-4" />
+              <Plus />
               Ajouter une leçon
             </Link>
           </Button>
@@ -195,9 +195,6 @@ export default async function ModuleDetailPage({
                   key={lesson.id}
                   className="flex items-center gap-4 hover:bg-muted/50 p-4 border rounded-lg transition-colors"
                 >
-                  <button className="text-muted-foreground hover:text-foreground cursor-grab">
-                    <GripVertical className="w-5 h-5" />
-                  </button>
                   <div className="flex justify-center items-center bg-muted rounded-md w-10 h-10">
                     <Video className="w-5 h-5 text-muted-foreground" />
                   </div>
@@ -224,13 +221,6 @@ export default async function ModuleDetailPage({
                       >
                         <Edit className="w-4 h-4" />
                       </Link>
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>

@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 /**
- * Schema pour le formulaire de création de module
+ * Schema unifié pour le formulaire de module (création et édition)
  * Compatible avec react-hook-form + zodResolver
  */
-export const createModuleFormSchema = z.object({
+export const moduleFormSchema = z.object({
   title: z.string().min(1, "Le titre est requis"),
   description: z.string().optional(),
   order: z.number().int().min(1, "L'ordre doit être au moins 1"),
@@ -12,19 +12,10 @@ export const createModuleFormSchema = z.object({
   courseId: z.string().min(1, "L'ID du cours est requis"),
 });
 
-export type CreateModuleFormInput = z.infer<typeof createModuleFormSchema>;
+export type ModuleFormInput = z.infer<typeof moduleFormSchema>;
 
-/**
- * Schema pour le formulaire d'édition de module
- * Compatible avec react-hook-form + zodResolver
- */
-export const updateModuleFormSchema = z.object({
-  id: z.string().min(1, "L'ID du module est requis"),
-  title: z.string().min(1, "Le titre est requis"),
-  description: z.string().optional(),
-  order: z.number().int().min(1, "L'ordre doit être au moins 1"),
-  isPublished: z.boolean(),
-  courseId: z.string().min(1, "L'ID du cours est requis"),
-});
-
-export type UpdateModuleFormInput = z.infer<typeof updateModuleFormSchema>;
+// Aliases pour la rétrocompatibilité
+export const createModuleFormSchema = moduleFormSchema;
+export const updateModuleFormSchema = moduleFormSchema;
+export type CreateModuleFormInput = ModuleFormInput;
+export type UpdateModuleFormInput = ModuleFormInput;

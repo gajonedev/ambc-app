@@ -199,7 +199,7 @@ export default async function EditLessonPage({ params }: EditLessonPageProps) {
                 </div>
               )}
               <Button type="button" variant="outline">
-                <Plus className="mr-2 w-4 h-4" />
+                <Plus />
                 Ajouter une ressource
               </Button>
             </div>

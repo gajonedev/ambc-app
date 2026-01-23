@@ -122,7 +122,7 @@ export default async function NewLessonPage({ params }: NewLessonPageProps) {
             <div className="space-y-4">
               <div className="p-4 border-2 border-dashed rounded-lg text-center">
                 <Button type="button" variant="outline">
-                  <Plus className="mr-2 w-4 h-4" />
+                  <Plus />
                   Ajouter une ressource
                 </Button>
               </div>

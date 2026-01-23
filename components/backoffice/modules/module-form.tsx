@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Loader, Trash2 } from "lucide-react";
 
 import { useTRPC } from "@/trpc/client";
-import { updateModuleFormSchema, type UpdateModuleFormInput } from "./schemas";
+import { moduleFormSchema, type ModuleFormInput } from "./schemas";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,37 +52,59 @@ interface ModuleData {
   courseId: string;
 }
 
-interface UpdateModuleFormProps {
-  moduleData: ModuleData;
+interface ModuleFormProps {
+  mode: "create" | "edit";
   courseId: string;
+  moduleData?: ModuleData;
+  defaultOrder?: number;
 }
 
-export function UpdateModuleForm({
-  moduleData,
+export function ModuleForm({
+  mode,
   courseId,
-}: UpdateModuleFormProps) {
+  moduleData,
+  defaultOrder = 1,
+}: ModuleFormProps) {
   const router = useRouter();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const isEditMode = mode === "edit";
+  const editing = isEditMode && moduleData;
 
-  const form = useForm<UpdateModuleFormInput>({
-    resolver: zodResolver(updateModuleFormSchema),
+  const form = useForm<ModuleFormInput>({
+    resolver: zodResolver(moduleFormSchema),
     defaultValues: {
-      id: moduleData.id,
-      title: moduleData.title,
-      description: moduleData.description ?? "",
-      order: moduleData.order,
-      isPublished: moduleData.isPublished,
+      title: editing ? moduleData.title : "",
+      description: editing ? (moduleData.description ?? "") : "",
+      order: editing ? moduleData.order : defaultOrder,
+      isPublished: editing ? moduleData.isPublished : false,
       courseId: courseId,
     },
   });
 
-  const { mutate: updateModule, isPending: isUpdating } = useMutation(
+  // Create mutation
+  const createMutation = useMutation(
+    trpc.admin.module.create.mutationOptions({
+      onSuccess: ({ title, id }) => {
+        toast.success(`Module "${title}" créé avec succès !`);
+        queryClient.invalidateQueries();
+        router.push(`/backoffice/courses/${courseId}/modules/${id}`);
+      },
+      onError: (error) => {
+        toast.error(error.message || "Erreur lors de la création du module");
+      },
+    }),
+  );
+
+  // Update mutation
+  const updateMutation = useMutation(
     trpc.admin.module.update.mutationOptions({
       onSuccess: ({ title }) => {
         toast.success(`Module "${title}" mis à jour !`);
         queryClient.invalidateQueries();
-        router.push(`/backoffice/courses/${courseId}`);
+        router.push(
+          `/backoffice/courses/${courseId}/modules/${moduleData?.id}`,
+        );
       },
       onError: (error) => {
         toast.error(error.message || "Erreur lors de la mise à jour");
@@ -90,7 +112,8 @@ export function UpdateModuleForm({
     }),
   );
 
-  const { mutate: deleteModule, isPending: isDeleting } = useMutation(
+  // Delete mutation
+  const deleteMutation = useMutation(
     trpc.admin.module.delete.mutationOptions({
       onSuccess: () => {
         toast.success("Module supprimé avec succès");
@@ -103,15 +126,25 @@ export function UpdateModuleForm({
     }),
   );
 
-  const onSubmit = (data: UpdateModuleFormInput) => {
-    updateModule(data);
+  const isPending = createMutation.isPending || updateMutation.isPending;
+  const isDeleting = deleteMutation.isPending;
+
+  const onSubmit = (data: ModuleFormInput) => {
+    if (isEditMode && moduleData) {
+      updateMutation.mutate({
+        id: moduleData.id,
+        ...data,
+      });
+    } else {
+      createMutation.mutate(data);
+    }
   };
 
   const handleDelete = () => {
-    deleteModule({ id: moduleData.id });
+    if (moduleData) {
+      deleteMutation.mutate({ id: moduleData.id });
+    }
   };
-
-  const isPending = isUpdating || isDeleting;
 
   return (
     <Form {...form}>
@@ -121,7 +154,9 @@ export function UpdateModuleForm({
           <CardHeader>
             <CardTitle>Informations du module</CardTitle>
             <CardDescription>
-              Modifiez les informations du module
+              {isEditMode
+                ? "Modifiez les informations du module"
+                : "Remplissez les informations de base du module"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -210,7 +245,9 @@ export function UpdateModuleForm({
                       Publier le module
                     </FormLabel>
                     <FormDescription>
-                      Rendre ce module visible aux apprenants inscrits
+                      {isEditMode
+                        ? "Rendre ce module visible aux apprenants inscrits"
+                        : "Rendre automatiquement ce module visible aux apprenants inscrits"}
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -225,50 +262,57 @@ export function UpdateModuleForm({
           </CardContent>
         </Card>
 
-        {/* Hidden fields */}
-        <input type="hidden" {...form.register("id")} />
+        {/* Hidden courseId field */}
         <input type="hidden" {...form.register("courseId")} />
 
         {/* Actions */}
-        <div className="flex justify-between items-center">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button type="button" variant="destructive" disabled={isPending}>
-                <Trash2 className="mr-2 w-4 h-4" />
-                Supprimer
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Cette action est irréversible. Le module &quot;
-                  {moduleData.title}
-                  &quot; et toutes ses leçons seront définitivement supprimés.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Annuler</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDelete}
-                  className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+        <div
+          className={`flex items-center ${isEditMode ? "justify-between" : "justify-end"} gap-4`}
+        >
+          {isEditMode && moduleData && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  disabled={isPending || isDeleting}
                 >
-                  {isDeleting && (
-                    <Loader className="mr-2 w-4 h-4 animate-spin" />
-                  )}
+                  <Trash2 className="mr-2 w-4 h-4" />
                   Supprimer
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Cette action est irréversible. Le module &quot;
+                    {moduleData.title}
+                    &quot; et toutes ses leçons seront définitivement supprimés.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                  >
+                    {isDeleting && (
+                      <Loader className="mr-2 w-4 h-4 animate-spin" />
+                    )}
+                    Supprimer
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
 
           <div className="flex items-center gap-4">
             <Button type="button" variant="outline" asChild>
               <Link href={`/backoffice/courses/${courseId}`}>Annuler</Link>
             </Button>
-            <Button type="submit" disabled={isPending}>
-              {isUpdating && <Loader className="mr-2 w-4 h-4 animate-spin" />}
-              Enregistrer
+            <Button type="submit" disabled={isPending || isDeleting}>
+              {isPending && <Loader className="mr-2 w-4 h-4 animate-spin" />}
+              {isEditMode ? "Enregistrer" : "Créer le module"}
             </Button>
           </div>
         </div>
