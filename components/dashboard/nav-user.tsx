@@ -175,22 +175,16 @@ export function DisconnectButton() {
   };
   return (
     <>
-      <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent>
-          <AlertDialogTitle>Confirmer la déconnexion</AlertDialogTitle>
-          <AlertDialogDescription>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogTitle>Confirmer la déconnexion</DialogTitle>
+          <DialogDescription>
             Êtes-vous sûr de vouloir vous déconnecter ? Vous allez devoir vous
             reconnecter pour continuer.
-          </AlertDialogDescription>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={loading}>Annuler</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => {
-                e.preventDefault();
-                disconnectUser();
-              }}
-              disabled={loading}
-            >
+          </DialogDescription>
+          <DialogFooter>
+            <DialogClose disabled={loading}>Annuler</DialogClose>
+            <Button onClick={disconnectUser} disabled={loading}>
               {loading ? (
                 <>
                   <Spinner />
@@ -199,10 +193,10 @@ export function DisconnectButton() {
               ) : (
                 "Se déconnecter"
               )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <DropdownMenuItem
         variant="destructive"
         onSelect={(e) => {
