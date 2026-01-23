@@ -41,6 +41,16 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
+import { Spinner } from "../ui/spinner";
 
 interface NavUserProps {
   user: {
@@ -165,32 +175,34 @@ export function DisconnectButton() {
   };
   return (
     <>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogTitle>Confirmer la déconnexion</DialogTitle>
-          <DialogDescription>
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent>
+          <AlertDialogTitle>Confirmer la déconnexion</AlertDialogTitle>
+          <AlertDialogDescription>
             Êtes-vous sûr de vouloir vous déconnecter ? Vous allez devoir vous
             reconnecter pour continuer.
-          </DialogDescription>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline" disabled={loading}>
-                Annuler
-              </Button>
-            </DialogClose>
-            <Button onClick={disconnectUser} disabled={loading}>
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={loading}>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                disconnectUser();
+              }}
+              disabled={loading}
+            >
               {loading ? (
                 <>
-                  <Loader className="mr-2 size-4 animate-spin" />
+                  <Spinner />
                   Déconnexion
                 </>
               ) : (
                 "Se déconnecter"
               )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <DropdownMenuItem
         variant="destructive"
         onSelect={(e) => {

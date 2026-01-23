@@ -27,8 +27,8 @@
   border-radius: 999px;
 
   box-shadow:
-    0 0 32px color-mix(in srgb, var(--primary) 35%, transparent),
-    0 0 14px color-mix(in srgb, var(--primary) 65%, transparent);
+    0 0 32px var(--primary),
+    0 0 14px var(--primary);
 }
 
 /* Remove these to get rid of the spinner */

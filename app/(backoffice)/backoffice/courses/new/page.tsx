@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { adminOnlyPage } from "@/server/utils";
 import { Button } from "@/components/ui/button";
-import { CreateCourseForm } from "@/components/backoffice/courses/create-course-form";
+import { CourseForm } from "@/components/backoffice/courses/course-form";
 
 export default async function NewCoursePage() {
   const user = await adminOnlyPage();
@@ -29,7 +29,7 @@ export default async function NewCoursePage() {
 
       {/* Form */}
       <div className="max-w-3xl">
-        <CreateCourseForm user={user} />
+        <CourseForm mode="create" user={user} />
       </div>
     </div>
   );

@@ -3,10 +3,12 @@
 import { useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import imageCompression from "browser-image-compression";
-import { ImageIcon, Loader, Upload, X } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { ImageIcon, Loader, Trash2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { useUploadThing } from "@/utils/uploadthing";
+import { useTRPC } from "@/trpc/client";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
 
 import { cn } from "@/lib/utils";
@@ -44,11 +46,26 @@ export function ImageDropzone({
   className,
   compressionOptions,
 }: ImageDropzoneProps) {
+  const trpc = useTRPC();
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
   const [isCompressing, setIsCompressing] = useState(false);
-  const [imageUploaded, setImageUploaded] = useState(false);
+
+  // Mutation pour supprimer le fichier sur UploadThing
+  const deleteMutation = useMutation(
+    trpc.admin.file.delete.mutationOptions({
+      onSuccess: () => {
+        toast.success("Image supprimée avec succès !");
+        onChange("");
+      },
+      onError: (error) => {
+        toast.error("Erreur lors de la suppression: " + error.message);
+      },
+    }),
+  );
+
+  const isDeleting = deleteMutation.isPending;
 
   // Options de compression par défaut (mémoïsées)
   const compressionConfig = useMemo(
@@ -73,7 +90,6 @@ export function ImageDropzone({
         URL.revokeObjectURL(preview);
       }
 
-      setImageUploaded(true);
       setPreview(null);
       setFile(null);
       setProgress(0);
@@ -168,7 +184,15 @@ export function ImageDropzone({
     onChange("");
   };
 
+  // Supprimer l'image uploadée sur UploadThing
+  const handleDeleteUploaded = () => {
+    if (value) {
+      deleteMutation.mutate({ filesUrls: [value] });
+    }
+  };
+
   const displayImage = preview || value;
+  const isUploadedImage = !preview && value;
 
   return (
     <div className={cn("space-y-3", className)}>
@@ -182,8 +206,14 @@ export function ImageDropzone({
               className="object-cover"
               unoptimized={preview !== null}
             />
+            {isDeleting && (
+              <div className="absolute inset-0 flex justify-center items-center bg-background/80">
+                <Loader className="w-6 h-6 animate-spin" />
+              </div>
+            )}
           </div>
-          {!imageUploaded && (
+          {/* Bouton X pour annuler le preview (avant upload) */}
+          {!isUploadedImage && (
             <Button
               type="button"
               variant="destructive"
@@ -193,6 +223,19 @@ export function ImageDropzone({
               disabled={disabled || isUploading || isCompressing}
             >
               <X className="w-3 h-3" />
+            </Button>
+          )}
+          {/* Bouton poubelle pour supprimer l'image uploadée */}
+          {isUploadedImage && (
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon"
+              className="-top-2 -right-2 absolute w-6 h-6"
+              onClick={handleDeleteUploaded}
+              disabled={disabled || isDeleting}
+            >
+              <Trash2 className="w-3 h-3" />
             </Button>
           )}
         </div>

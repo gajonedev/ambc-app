@@ -9,6 +9,7 @@ import {
 import { db } from "@/db";
 import { course } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
+import { utapi } from "@/server/uploadthing";
 
 export const adminCourseRouter = createTRPCRouter({
   create: adminProcedure
@@ -154,6 +155,21 @@ export const adminCourseRouter = createTRPCRouter({
 
         if (!deletedCourse) {
           throw new Error("Cours non trouvé.");
+        }
+
+        // Supprimer les images associées sur UploadThing
+        const filesToDelete: string[] = [];
+        if (deletedCourse.image) {
+          const imageKey = deletedCourse.image.split("/").pop();
+          if (imageKey) filesToDelete.push(imageKey);
+        }
+        if (deletedCourse.instructorImage) {
+          const instructorKey = deletedCourse.instructorImage.split("/").pop();
+          if (instructorKey) filesToDelete.push(instructorKey);
+        }
+
+        if (filesToDelete.length > 0) {
+          await utapi.deleteFiles(filesToDelete);
         }
 
         return deletedCourse;

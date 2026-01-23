@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 /**
- * Schema pour le formulaire de création de cours
+ * Schema pour le formulaire de cours (création et édition)
  * Tous les champs sont requis (les valeurs par défaut sont gérées par defaultValues du formulaire)
  * Compatible avec react-hook-form + zodResolver
  */
-export const createCourseFormSchema = z.object({
+export const courseFormSchema = z.object({
   title: z.string().min(1, "Le titre est requis"),
   slug: z
     .string()
@@ -28,4 +28,8 @@ export const createCourseFormSchema = z.object({
   instructorImage: z.string().min(1, "Veuillez importer l'image du formateur"),
 });
 
-export type CreateCourseFormInput = z.infer<typeof createCourseFormSchema>;
+export type CourseFormInput = z.infer<typeof courseFormSchema>;
+
+// Alias pour la rétrocompatibilité
+export const createCourseFormSchema = courseFormSchema;
+export type CreateCourseFormInput = CourseFormInput;
