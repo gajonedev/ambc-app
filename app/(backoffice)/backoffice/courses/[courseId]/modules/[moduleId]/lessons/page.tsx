@@ -80,30 +80,24 @@ export default async function ModuleLessonsPage({
       <div className="flex sm:flex-row flex-col justify-between gap-4">
         <div className="flex items-start gap-4">
           <Button variant="ghost" size="icon" asChild>
-            <Link href={`/backoffice/courses/${courseId}`}>
+            <Link href={`/backoffice/courses/${courseId}/modules/${moduleId}`}>
               <ArrowLeft className="w-5 h-5" />
             </Link>
           </Button>
           <div>
-            <div className="flex items-center gap-2 mb-1 text-muted-foreground text-sm">
-              <Link
-                href={`/backoffice/courses/${courseId}`}
-                className="hover:underline"
-              >
-                Retour au cours
-              </Link>
-              <span>/</span>
-              <span>Module {moduleData.order}</span>
-            </div>
-            <h1 className="font-bold text-2xl">{moduleData.title}</h1>
-            <p className="text-muted-foreground">{moduleData.description}</p>
+            <h1 className="font-bold text-2xl line-clamp-1">
+              {moduleData.title}
+            </h1>
+            <p className="text-muted-foreground line-clamp-1">
+              {moduleData.description}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
             <Link href={`/backoffice/courses/${courseId}/modules/${moduleId}`}>
               <Edit className="mr-2 w-4 h-4" />
-              Modifier le module
+              Modifier
             </Link>
           </Button>
           <Button asChild>

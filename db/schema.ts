@@ -9,8 +9,9 @@ import {
   decimal,
   unique,
 } from "drizzle-orm/pg-core";
-import { createId } from "@paralleldrive/cuid2";
+import { init } from "@paralleldrive/cuid2";
 
+const createId = init({ length: 8 });
 // ==================== AUTH (Better Auth) ====================
 
 export const user = pgTable("user", {

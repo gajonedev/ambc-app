@@ -93,11 +93,8 @@ export function BackofficeHeader() {
                 </BreadcrumbPage>
               ) : (
                 <>
-                  <BreadcrumbLink
-                    href={crumb.href}
-                    className="max-w-40 line-clamp-1"
-                  >
-                    {crumb.title}
+                  <BreadcrumbLink className="max-w-40 line-clamp-1" asChild>
+                    <Link href={crumb.href}>{crumb.title}</Link>
                   </BreadcrumbLink>
                   <BreadcrumbSeparator />
                 </>

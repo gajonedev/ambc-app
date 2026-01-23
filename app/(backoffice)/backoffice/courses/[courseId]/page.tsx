@@ -206,7 +206,7 @@ export default async function CourseDetailPage({
       {/* Tabs */}
       <Tabs defaultValue="modules" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="modules">Modules & Leçons</TabsTrigger>
+          <TabsTrigger value="modules">Modules</TabsTrigger>
           <TabsTrigger value="students">Apprenants</TabsTrigger>
           <TabsTrigger value="settings">Paramètres</TabsTrigger>
         </TabsList>
@@ -220,10 +220,10 @@ export default async function CourseDetailPage({
                 Organisez le contenu de votre formation
               </p>
             </div>
-            <Button asChild>
+            <Button asChild className="flex items-center">
               <Link href={`/backoffice/courses/${courseId}/modules/new`}>
                 <Plus />
-                Nouveau module
+                <span className="max-md:hidden">Nouveau module</span>
               </Link>
             </Button>
           </div>
