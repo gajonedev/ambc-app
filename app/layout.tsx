@@ -42,6 +42,12 @@ export default function RootLayout({
               fontFamily: "var(--font-inter)",
             }}
             position="top-center"
+            toastOptions={{
+              style: {
+                borderRadius: "var(--radius)",
+              },
+              duration: 5000,
+            }}
           />
         </ThemeProvider>
       </body>
