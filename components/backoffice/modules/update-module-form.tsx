@@ -178,6 +178,7 @@ export function UpdateModuleForm({
                       onChange={(e) =>
                         field.onChange(parseInt(e.target.value) || 1)
                       }
+                      disabled
                     />
                   </FormControl>
                   <FormDescription>

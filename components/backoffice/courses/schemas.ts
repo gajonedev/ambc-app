@@ -25,7 +25,12 @@ export const courseFormSchema = z.object({
   isFeatured: z.boolean(),
   instructorName: z.string().min(1, "Le nom du formateur est requis"),
   instructorBio: z.string(),
-  instructorImage: z.string().min(1, "Veuillez importer l'image du formateur"),
+  instructorImage: z
+    .string()
+    .min(
+      1,
+      "Veuillez importer la photo du formateur avant de valider le formulaire",
+    ),
 });
 
 export type CourseFormInput = z.infer<typeof courseFormSchema>;

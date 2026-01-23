@@ -82,7 +82,7 @@ export default async function ModuleDetailPage({
 
   const totalDuration = lessons.reduce(
     (acc, lesson) => acc + (lesson.videoDuration || 0),
-    0
+    0,
   );
 
   return (
@@ -113,7 +113,9 @@ export default async function ModuleDetailPage({
         </div>
         <div className="flex items-center gap-2">
           <Button asChild>
-            <Link href={`/backoffice/courses/${courseId}/modules/${moduleId}/edit`}>
+            <Link
+              href={`/backoffice/courses/${courseId}/modules/${moduleId}/edit`}
+            >
               <Edit />
               Modifier
             </Link>
@@ -179,8 +181,8 @@ export default async function ModuleDetailPage({
         </CardHeader>
         <CardContent>
           {lessons.length === 0 ? (
-            <div className="py-8 text-center text-muted-foreground">
-              <Video className="mx-auto mb-4 w-12 h-12 opacity-50" />
+            <div className="py-8 text-muted-foreground text-center">
+              <Video className="opacity-50 mx-auto mb-4 w-12 h-12" />
               <p>Aucune leçon pour le moment</p>
               <p className="text-sm">
                 Commencez par ajouter votre première leçon
@@ -191,9 +193,9 @@ export default async function ModuleDetailPage({
               {lessons.map((lesson) => (
                 <div
                   key={lesson.id}
-                  className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                  className="flex items-center gap-4 hover:bg-muted/50 p-4 border rounded-lg transition-colors"
                 >
-                  <button className="cursor-grab text-muted-foreground hover:text-foreground">
+                  <button className="text-muted-foreground hover:text-foreground cursor-grab">
                     <GripVertical className="w-5 h-5" />
                   </button>
                   <div className="flex justify-center items-center bg-muted rounded-md w-10 h-10">

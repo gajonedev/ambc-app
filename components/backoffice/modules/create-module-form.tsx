@@ -57,9 +57,9 @@ export function CreateModuleForm({
 
   const { mutate, isPending } = useMutation(
     trpc.admin.module.create.mutationOptions({
-      onSuccess: ({ title }) => {
+      onSuccess: ({ title, id }) => {
         toast.success(`Module "${title}" créé avec succès !`);
-        router.push(`/backoffice/courses/${courseId}`);
+        router.push(`/backoffice/courses/${courseId}/modules/${id}`);
       },
       onError: (error) => {
         toast.error(error.message || "Erreur lors de la création du module");
@@ -136,6 +136,7 @@ export function CreateModuleForm({
                       onChange={(e) =>
                         field.onChange(parseInt(e.target.value) || 1)
                       }
+                      disabled
                     />
                   </FormControl>
                   <FormDescription>

@@ -46,7 +46,7 @@ export default function RootLayout({
               style: {
                 borderRadius: "var(--radius)",
               },
-              duration: 5000,
+              duration: 4000,
             }}
           />
         </ThemeProvider>
