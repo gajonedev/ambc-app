@@ -236,7 +236,7 @@ export const getModuleColumns = ({
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link
-                href={`/backoffice/courses/${courseId}/modules/${moduleData.id}`}
+                href={`/backoffice/courses/${courseId}/modules/${moduleData.id}/edit`}
               >
                 <Pencil className="mr-2 w-4 h-4" />
                 Modifier

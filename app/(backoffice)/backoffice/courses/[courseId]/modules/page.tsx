@@ -44,7 +44,7 @@ export default async function ModulesPage({ params }: ModulesPageProps) {
           </Button>
           <div>
             <h1 className="font-bold text-2xl tracking-tight">
-              Modules du cours
+              Modules de la formation
             </h1>
             <p className="text-muted-foreground">{course.title}</p>
           </div>

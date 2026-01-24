@@ -457,7 +457,7 @@ export function CourseForm({ mode, user, courseData }: CourseFormProps) {
         </Card>
 
         {/* Actions */}
-        <div className="flex max-sm:flex-col justify-end items-center gap-4">
+        <div className="flex justify-end items-center gap-4">
           <Button type="button" variant="outline" asChild disabled={isPending}>
             <Link
               href={
@@ -470,7 +470,7 @@ export function CourseForm({ mode, user, courseData }: CourseFormProps) {
             </Link>
           </Button>
           <Button type="submit" disabled={isPending}>
-            {isPending && <Loader className="mr-2 w-4 h-4 animate-spin" />}
+            {isPending && <Spinner />}
             {isEditMode
               ? "Enregistrer les modifications"
               : "Créer la formation"}

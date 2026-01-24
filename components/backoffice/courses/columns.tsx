@@ -260,15 +260,6 @@ export const columns: ColumnDef<Course>[] = [
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                toast.warning("Fonctionnalité à implémenter");
-              }}
-              variant="destructive"
-            >
-              <Trash2 className="mr-2 w-4 h-4" />
-              Supprimer
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
