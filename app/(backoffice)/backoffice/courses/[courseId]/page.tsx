@@ -1,15 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   ArrowLeft,
@@ -20,8 +13,6 @@ import {
   EyeOff,
   ExternalLink,
   Plus,
-  GripVertical,
-  Trash2,
   ImageIcon,
 } from "lucide-react";
 import { adminOnlyPage } from "@/server/utils";
@@ -203,139 +194,96 @@ export default async function CourseDetailPage({
         </div>
       </div>
 
-      {/* Tabs */}
-      <Tabs defaultValue="modules" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="modules">Modules</TabsTrigger>
-          <TabsTrigger value="students">Apprenants</TabsTrigger>
-          <TabsTrigger value="settings">Paramètres</TabsTrigger>
-        </TabsList>
+      <div className="flex-1 space-y-4">
+        {/* Modules Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="font-semibold text-lg">Modules du cours</h2>
+            <p className="text-muted-foreground text-sm">
+              Organisez le contenu de votre formation
+            </p>
+          </div>
+          <Button asChild className="flex items-center">
+            <Link href={`/backoffice/courses/${courseId}/modules/new`}>
+              <Plus />
+              <span className="max-md:hidden">Nouveau module</span>
+            </Link>
+          </Button>
+        </div>
 
-        <TabsContent value="modules" className="space-y-4">
-          {/* Modules Header */}
-          <div className="flex justify-between items-center">
-            <div>
-              <h2 className="font-semibold text-lg">Modules du cours</h2>
-              <p className="text-muted-foreground text-sm">
-                Organisez le contenu de votre formation
-              </p>
-            </div>
-            <Button asChild className="flex items-center">
-              <Link href={`/backoffice/courses/${courseId}/modules/new`}>
-                <Plus />
-                <span className="max-md:hidden">Nouveau module</span>
+        {/* Modules List */}
+        <Card>
+          <CardContent className="flex flex-col gap-4 pt-6">
+            {modules.length === 0 ? (
+              <div className="py-8 text-center">
+                <BookOpen className="mx-auto mb-4 w-12 h-12 text-muted-foreground" />
+                <h3 className="mb-1 font-medium">Aucun module</h3>
+                <p className="mb-4 text-muted-foreground text-sm">
+                  Créez votre premier module pour commencer
+                </p>
+                <Button asChild>
+                  <Link href={`/backoffice/courses/${courseId}/modules/new`}>
+                    <Plus />
+                    Créer un module
+                  </Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {modules.map((module) => (
+                  <div
+                    key={module.id}
+                    className="flex items-center gap-4 bg-muted/50 hover:bg-muted p-4 rounded-lg transition-colors"
+                  >
+                    <div className="flex justify-center items-center bg-primary/10 rounded-full w-10 h-10 shrink-0">
+                      <span className="font-semibold text-primary">
+                        {module.order}
+                      </span>
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <Link
+                        href={`/backoffice/courses/${courseId}/modules/${module.id}/lessons`}
+                        className="hover:underline"
+                      >
+                        <h3 className="font-medium truncate">{module.title}</h3>
+                      </Link>
+                      <p className="text-muted-foreground text-sm">
+                        {5} leçons
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          module.isPublished
+                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                            : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                        }`}
+                      >
+                        {module.isPublished ? (
+                          <span className="flex items-center gap-1">
+                            <Eye className="w-3 h-3" /> Publié
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1">
+                            <EyeOff className="w-3 h-3" /> Brouillon
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <Button variant="outline" asChild>
+              <Link href={`/backoffice/courses/${courseId}/modules`}>
+                Voir tous les modules
               </Link>
             </Button>
-          </div>
-
-          {/* Modules List */}
-          <Card>
-            <CardContent className="flex flex-col gap-4 pt-6">
-              {modules.length === 0 ? (
-                <div className="py-8 text-center">
-                  <BookOpen className="mx-auto mb-4 w-12 h-12 text-muted-foreground" />
-                  <h3 className="mb-1 font-medium">Aucun module</h3>
-                  <p className="mb-4 text-muted-foreground text-sm">
-                    Créez votre premier module pour commencer
-                  </p>
-                  <Button asChild>
-                    <Link href={`/backoffice/courses/${courseId}/modules/new`}>
-                      <Plus />
-                      Créer un module
-                    </Link>
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {modules.map((module) => (
-                    <div
-                      key={module.id}
-                      className="flex items-center gap-4 bg-muted/50 hover:bg-muted p-4 rounded-lg transition-colors"
-                    >
-                      <div className="flex justify-center items-center bg-primary/10 rounded-full w-10 h-10 shrink-0">
-                        <span className="font-semibold text-primary">
-                          {module.order}
-                        </span>
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <Link
-                          href={`/backoffice/courses/${courseId}/modules/${module.id}/lessons`}
-                          className="hover:underline"
-                        >
-                          <h3 className="font-medium truncate">
-                            {module.title}
-                          </h3>
-                        </Link>
-                        <p className="text-muted-foreground text-sm">
-                          {5} leçons
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            module.isPublished
-                              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                              : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
-                          }`}
-                        >
-                          {module.isPublished ? (
-                            <span className="flex items-center gap-1">
-                              <Eye className="w-3 h-3" /> Publié
-                            </span>
-                          ) : (
-                            <span className="flex items-center gap-1">
-                              <EyeOff className="w-3 h-3" /> Brouillon
-                            </span>
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <Button variant="outline" asChild>
-                <Link href={`/backoffice/courses/${courseId}/modules`}>
-                  Voir tous les modules
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="students">
-          <Card>
-            <CardHeader>
-              <CardTitle>Apprenants inscrits</CardTitle>
-              <CardDescription>
-                Liste des apprenants inscrits à cette formation
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="py-8 text-muted-foreground text-center">
-                Fonctionnalité à implémenter
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="settings">
-          <Card>
-            <CardHeader>
-              <CardTitle>Paramètres du cours</CardTitle>
-              <CardDescription>
-                Gérez les paramètres avancés de cette formation
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="py-8 text-muted-foreground text-center">
-                Fonctionnalité à implémenter
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
