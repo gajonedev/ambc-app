@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { normalizeFileSize } from "@/utils";
+import { Spinner } from "./spinner";
 
 interface ImageDropzoneProps {
   value?: string;
@@ -117,6 +118,7 @@ export function ImageDropzone({
         // Compresser l'image si c'est une image
         if (selectedFile.type.startsWith("image/")) {
           setIsCompressing(true);
+
           try {
             const compressedFile = await imageCompression(
               selectedFile,
@@ -129,7 +131,9 @@ export function ImageDropzone({
             });
 
             setFile(finalFile);
+
             const objectUrl = URL.createObjectURL(finalFile);
+
             setPreview(objectUrl);
           } catch (error) {
             console.error("Erreur de compression:", error);
@@ -172,6 +176,7 @@ export function ImageDropzone({
   // Handlers
   const handleUpload = async () => {
     if (!file) return;
+
     await startUpload([file]);
   };
 
@@ -179,6 +184,7 @@ export function ImageDropzone({
     if (preview) {
       URL.revokeObjectURL(preview);
     }
+
     setPreview(null);
     setFile(null);
     onChange("");
@@ -212,6 +218,7 @@ export function ImageDropzone({
               </div>
             )}
           </div>
+
           {/* Bouton X pour annuler le preview (avant upload) */}
           {!isUploadedImage && (
             <Button
@@ -225,6 +232,7 @@ export function ImageDropzone({
               <X className="w-3 h-3" />
             </Button>
           )}
+
           {/* Bouton poubelle pour supprimer l'image uploadée */}
           {isUploadedImage && (
             <Button
@@ -274,8 +282,8 @@ export function ImageDropzone({
 
       {/* Indicateur de compression */}
       {isCompressing && (
-        <div className="relative flex justify-center items-center gap-2 bg-muted/50 p-4 border rounded-lg">
-          <Loader className="w-4 h-4 animate-spin" />
+        <div className="relative flex justify-center items-center gap-2 bg-muted/50 p-2 border rounded-lg">
+          <Spinner />
           <span className="text-muted-foreground text-sm">Traitement...</span>
         </div>
       )}
