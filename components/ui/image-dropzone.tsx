@@ -163,12 +163,12 @@ export function ImageDropzone({
     maxFiles: 1,
     disabled: disabled || isUploading,
     maxSize: 8 * 1024 * 1024, // 8MB
-    onError: (err) => {
-      toast.error("Erreur lors de la sélection du fichier: " + err.message);
+    onError: ({ message }) => {
+      toast.error("Erreur lors de la sélection du fichier: " + message);
     },
-    onDropRejected: (f) => {
+    onDropRejected: ([f]) => {
       toast.error(
-        "Erreur lors de la sélection du fichier: " + f[0].errors[0].message,
+        "Erreur lors de la sélection du fichier: " + f.errors[0].message,
       );
     },
   });
